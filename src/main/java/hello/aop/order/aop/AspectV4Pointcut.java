@@ -1,0 +1,35 @@
+package hello.aop.order.aop;
+
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+
+@Slf4j
+@Aspect
+public class AspectV4Pointcut {
+    @Around("hello.aop.order.aop.Pointcuts.allOrder()")
+    public Object doLog(ProceedingJoinPoint joinPoint) throws Throwable {
+        log.info("[log] {}", joinPoint.getSignature());
+        return joinPoint.proceed();
+    }
+
+    // hello.aop.order 패키지 안에 속하면서 메서드 이름 패턴이 `*Service*`에 일치하는 것만
+    @Around("hello.aop.order.aop.Pointcuts.orderAndService()")
+    public Object doTransaction(ProceedingJoinPoint joinPoint) throws Throwable {
+        Object result = null;
+
+        try {
+            log.info("[트랜잭션 시작] {}", joinPoint.getSignature());
+            result = joinPoint.proceed();
+            log.info("[트랜잭션 커밋] {}", joinPoint.getSignature());
+        } catch (Exception e) {
+            log.info("[트랜잭션 롤백] {}", joinPoint.getSignature());
+            throw e;
+        } finally {
+            log.info("[리소스 릴리즈] {}", joinPoint.getSignature());
+        }
+
+        return result;
+    }
+}
