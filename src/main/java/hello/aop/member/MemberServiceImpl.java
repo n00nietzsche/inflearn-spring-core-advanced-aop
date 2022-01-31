@@ -12,8 +12,9 @@ public class MemberServiceImpl implements MemberService {
     public String hello(String param) {
         return "ok";
     }
-
     public String internal(String param) {
         return "ok";
     }
+    public void testMethod(MyClass myClass) { };
+
 }
